@@ -18,7 +18,7 @@ Personal dotfiles managed via this git repo.
     ```
 
 - [scripts/sync-local-machine.sh](scripts/sync-local-machine.sh)
-  - Copies files from [home/](home/) into your `$HOME` directory.
+  - Copies files from [home/](home/) into your `$HOME` directory, preserving their paths under `home/`.
   - Prompts before overwriting existing files.
   - Usage (from repo root):
 

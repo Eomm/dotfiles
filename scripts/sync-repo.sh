@@ -7,9 +7,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 TARGET_DIR="${REPO_ROOT}/home"
 
+# Basic colors for readability
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+BLUE="\033[34m"
+BOLD="\033[1m"
+RESET="\033[0m"
+
 mkdir -p "${TARGET_DIR}"
 
-echo "Syncing dotfiles into ${TARGET_DIR} ..."
+printf "${BOLD}Syncing dotfiles into${RESET} ${YELLOW}%s${RESET} ...\n" "${TARGET_DIR}"
 
 SOURCE_FILES=(
   "${HOME}/.zshrc"
@@ -25,12 +33,12 @@ for src in "${SOURCE_FILES[@]}"; do
     rel_path="${src#${HOME}/}"
     dest="${TARGET_DIR}/${rel_path}"
     mkdir -p "$(dirname "${dest}")"
-    echo "  - Copying ${src} -> ${dest}"
+    printf "  - ${GREEN}Copying${RESET} %s -> %s\n" "${src}" "${dest}"
     cp "${src}" "${dest}"
   else
-    echo "  - WARNING: ${src} does not exist, skipping" >&2
+    printf "  - ${YELLOW}WARNING${RESET}: %s does not exist, %sskipping%s\n" "${src}" "${BLUE}" "${RESET}" >&2
   fi
 done
 
-echo "Done."
+printf "${GREEN}Done.${RESET}\n"
 
