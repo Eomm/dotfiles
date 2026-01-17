@@ -14,9 +14,11 @@ fi
 
 echo "Syncing dotfiles from ${SOURCE_DIR} to ${HOME} ..."
 
-# Include dotfiles (like .zshrc, .gitconfig) in glob expansion
-shopt -s nullglob dotglob
-SOURCE_FILES=("${SOURCE_DIR}"/*)
+# Collect all regular files under SOURCE_DIR, preserving paths relative to it.
+SOURCE_FILES=()
+while IFS= read -r -d '' src; do
+  SOURCE_FILES+=("${src}")
+done < <(find "${SOURCE_DIR}" -type f -print0)
 
 if [[ ${#SOURCE_FILES[@]} -eq 0 ]]; then
   echo "No files found in ${SOURCE_DIR}. Nothing to sync."
@@ -24,8 +26,8 @@ if [[ ${#SOURCE_FILES[@]} -eq 0 ]]; then
 fi
 
 for src in "${SOURCE_FILES[@]}"; do
-  base_name="$(basename "${src}")"
-  dest="${HOME}/${base_name}"
+  rel_path="${src#${SOURCE_DIR}/}"
+  dest="${HOME}/${rel_path}"
 
   if [[ -e "${dest}" ]]; then
     read -r -p "${dest} exists. Overwrite? [y/N] " answer
@@ -40,6 +42,7 @@ for src in "${SOURCE_FILES[@]}"; do
     esac
   else
     echo "  - Creating ${dest}"
+    mkdir -p "$(dirname "${dest}")"
     cp "${src}" "${dest}"
   fi
 done

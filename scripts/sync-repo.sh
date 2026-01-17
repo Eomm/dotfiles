@@ -14,13 +14,17 @@ echo "Syncing dotfiles into ${TARGET_DIR} ..."
 SOURCE_FILES=(
   "${HOME}/.zshrc"
   "${HOME}/.gitconfig"
+  "${HOME}/workspace/_experiments/.gitconfig"
   "${HOME}/.gitignore"
 )
 
 for src in "${SOURCE_FILES[@]}"; do
   if [[ -f "${src}" ]]; then
-    base_name="$(basename "${src}")"
-    dest="${TARGET_DIR}/${base_name}"
+    # Preserve path relative to $HOME so nested files (e.g. ~/workspace/_experiments/.gitconfig)
+    # are stored under the same structure inside ${TARGET_DIR}.
+    rel_path="${src#${HOME}/}"
+    dest="${TARGET_DIR}/${rel_path}"
+    mkdir -p "$(dirname "${dest}")"
     echo "  - Copying ${src} -> ${dest}"
     cp "${src}" "${dest}"
   else

@@ -10,22 +10,21 @@ Personal dotfiles managed via this git repo.
 ## Scripts
 
 - [scripts/sync-repo.sh](scripts/sync-repo.sh)
-	- Copies selected dotfiles from `$HOME` into [home/](home/).
-	- Current sources: `~/.zshrc`, `~/.gitconfig`.
-	- Usage (from repo root):
+  - Copies selected dotfiles from `$HOME` into [home/](home/).
+  - Usage (from repo root):
 
-		```bash
-		scripts/sync-repo.sh
-		```
+    ```bash
+    scripts/sync-repo.sh
+    ```
 
 - [scripts/sync-local-machine.sh](scripts/sync-local-machine.sh)
-	- Copies files from [home/](home/) into your `$HOME` directory.
-	- Prompts before overwriting existing files.
-	- Usage (from repo root):
+  - Copies files from [home/](home/) into your `$HOME` directory.
+  - Prompts before overwriting existing files.
+  - Usage (from repo root):
 
-		```bash
-		scripts/sync-local-machine.sh
-		```
+    ```bash
+    scripts/sync-local-machine.sh
+    ```
 
 ## Typical workflow
 
