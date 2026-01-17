@@ -1,0 +1,61 @@
+[user]
+  name = Manuel Spigolon
+  email = manuel.spigolon@nearform.com
+	signingkey = 99BDAF40A729D9AD
+
+[core]
+	autocrlf = input
+  excludesfile = ~/.gitignore
+	editor = code -w
+
+[includeIf "gitdir:~/workspace/_experiments/"]
+    path = ~/workspace/_experiments/.gitconfig
+
+[alias]
+  s = status
+  pull-request = "!f() { git_branch=${2:-PULL_$1}; git branch -D $git_branch || true; git fetch origin pull/$1/head:$git_branch; git checkout $git_branch; }; f"
+  pull-request-up = "!f() { git_branch=${2:-PULL_$1}; git branch -D $git_branch || true; git fetch upstream pull/$1/head:$git_branch; git checkout $git_branch; }; f"
+  here = "!f() { git_branch=$1; git branch -D $git_branch; git checkout -b $git_branch; git push --set-upstream origin $git_branch -f; git checkout -; }; f"
+  push-push = !git push -u origin $(git symbolic-ref --short HEAD)
+  backwords = "!f() { git reset --hard $(git log --skip=$(expr $1) -1 --format=%h); }; f"
+  main = "!f() { (git checkout master && git pull origin master) || (git checkout main && git pull origin main) }; f"
+
+  # Show verbose output about tags, branches or remotes
+  tags = tag -l
+  branches = branch --all
+  remotes = remote --verbose
+  prev = checkout -
+
+  # Remove branches that have already been merged with main.
+  # a.k.a. ‘delete merged’
+  dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+
+  # Show the user email for the current repository.
+  whoami = config user.email
+
+[help]
+  # Automatically correct and execute mistyped commands.
+	autocorrect = 1
+
+[pull]
+  rebase = false
+
+[diff]
+  tool = default-difftool
+
+[difftool "default-difftool"]
+  cmd = code --wait --diff $LOCAL $REMOTE
+
+[init]
+  defaultBranch = main
+[fetch]
+	prune = true
+	pruneTags = true
+# [remote "main"]
+# 	tagOpt = --tags
+# [remote "master"]
+# 	tagOpt = --tags
+[commit]
+	gpgsign = true
+[gpg]
+	program = gpg
