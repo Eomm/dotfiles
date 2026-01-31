@@ -24,10 +24,26 @@ SOURCE_FILES=(
   "${HOME}/.gitconfig"
   "${HOME}/workspace/_experiments/.gitconfig"
   "${HOME}/.gitignore"
+  "${HOME}/.copilot/skills/"
+  "${HOME}/.gnupg/gpg-agent.conf"
 )
 
 for src in "${SOURCE_FILES[@]}"; do
-  if [[ -f "${src}" ]]; then
+  # If the source ends with a slash, treat it as a directory
+  if [[ "${src}" == */ ]]; then
+    dir="${src%/}"
+    if [[ -d "${dir}" ]]; then
+      # Preserve path relative to $HOME for the directory
+      rel_dir="${dir#${HOME}/}"
+      dest_dir="${TARGET_DIR}/${rel_dir}"
+      mkdir -p "${dest_dir}"
+      printf "  - ${GREEN}Copying directory contents${RESET} %s/ -> %s/\n" "${dir}" "${dest_dir}"
+      # Copy all files inside the directory, preserving structure
+      cp -R "${dir}/." "${dest_dir}/"
+    else
+      printf "  - ${YELLOW}WARNING${RESET}: %s is not a directory, %sskipping%s\n" "${dir}" "${BLUE}" "${RESET}" >&2
+    fi
+  elif [[ -f "${src}" ]]; then
     # Preserve path relative to $HOME so nested files (e.g. ~/workspace/_experiments/.gitconfig)
     # are stored under the same structure inside ${TARGET_DIR}.
     rel_path="${src#${HOME}/}"
