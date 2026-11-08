@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Transcribe a YouTube video to timestamped subtitles with mlx-whisper.
+# Usage: yt-transcribe <youtube-url> [output-dir] [language] [model]
+set -euo pipefail
+
+url="${1:?Usage: yt-transcribe <youtube-url> [output-dir] [language] [model]}"
+outdir="${2:-.}"
+lang="${3:-it}"
+model="${4:-mlx-community/whisper-large-v3-turbo}"
+
+mkdir -p "$outdir"
+work="$(mktemp -d)"
+trap 'rm -rf "$work"' EXIT
+
+title="$(yt-dlp --print '%(title)s' --no-playlist "$url" | tr '/:' '__')"
+echo "Downloading audio: $title"
+yt-dlp -x --audio-format mp3 --no-playlist -o "$work/audio.%(ext)s" "$url"
+
+echo "Transcribing ($lang, $model)..."
+mlx_whisper "$work/audio.mp3" \
+  --model "$model" \
+  --language "$lang" \
+  --output-format all \
+  --output-dir "$work" \
+  --word-timestamps True
+
+for ext in srt vtt json tsv txt; do
+  mv "$work/audio.$ext" "$outdir/$title.$ext"
+done
+
+echo "Done:"
+ls -1 "$outdir/$title".*

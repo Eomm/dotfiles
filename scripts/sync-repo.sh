@@ -26,6 +26,7 @@ SOURCE_FILES=(
   "${HOME}/.gitignore"
   "${HOME}/.copilot/skills/"
   "${HOME}/.gnupg/gpg-agent.conf"
+  "${HOME}/.local/bin/yt-transcribe"
 )
 
 for src in "${SOURCE_FILES[@]}"; do
